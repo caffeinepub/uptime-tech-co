@@ -15,12 +15,12 @@ import { Check, Loader2, Mail, MapPin, Menu, Phone, X } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { toast } from "sonner";
+import { AdminPage } from "./AdminPage";
 
 // ─── Nav links ───────────────────────────────────────────────────────────────
 const NAV_LINKS = [
   { label: "Services", href: "#services" },
   { label: "Business Plans", href: "#business-plans" },
-  { label: "Masjid Tech", href: "#masjid-tech" },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -176,7 +176,7 @@ function ContactForm() {
             data-ocid="contact.input"
             value={form.orgName}
             onChange={handleChange}
-            placeholder="Acme Corp or Masjid Al-Noor"
+            placeholder="Acme Corp"
             className="bg-navy border-card-border text-heading-text placeholder:text-muted-text focus:border-blue-accent"
           />
         </div>
@@ -229,11 +229,17 @@ function ContactForm() {
             <SelectValue placeholder="Select a service…" />
           </SelectTrigger>
           <SelectContent className="bg-card-bg border-card-border">
-            <SelectItem value="Tech Installs">Tech Installs</SelectItem>
+            <SelectItem value="Repairs & Setup">Repairs & Setup</SelectItem>
+            <SelectItem value="Networking">Networking</SelectItem>
+            <SelectItem value="Security & Surveillance">
+              Security & Surveillance
+            </SelectItem>
+            <SelectItem value="Infrastructure">Infrastructure</SelectItem>
+            <SelectItem value="Smart Tech">Smart Tech</SelectItem>
+            <SelectItem value="Business Software">Business Software</SelectItem>
             <SelectItem value="Business IT Support">
               Business IT Support
             </SelectItem>
-            <SelectItem value="Masjid Tech">Masjid Tech</SelectItem>
             <SelectItem value="Other">Other</SelectItem>
           </SelectContent>
         </Select>
@@ -274,7 +280,7 @@ function ContactForm() {
 }
 
 // ─── Main App ─────────────────────────────────────────────────────────────────
-export default function App() {
+function MainSite() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const currentYear = new Date().getFullYear();
 
@@ -424,7 +430,7 @@ export default function App() {
               transition={{ duration: 0.6, delay: 0.2 }}
               className="mt-6 text-lg md:text-xl text-body-text max-w-xl mx-auto leading-relaxed"
             >
-              Installs, IT support, and Masjid tech solutions — all across the
+              Installs and IT support for homes and businesses — all across the
               Greater Toronto Area.
             </motion.p>
 
@@ -465,21 +471,22 @@ export default function App() {
                 transition={{ delay: 0.06 }}
                 className="text-3xl md:text-4xl font-bold text-heading-text mb-4"
               >
-                One company. Everything tech.
+                What We Do
               </motion.h2>
               <motion.p
                 initial={{ opacity: 0, y: 16 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: 0.1 }}
-                className="text-body-text max-w-md mx-auto"
+                className="text-body-text max-w-lg mx-auto"
               >
-                For homes, businesses, and Masjids.
+                From a single laptop repair to a full office setup — we handle
+                it all across the Greater Toronto Area.
               </motion.p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Card 1 — Tech Installs */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Card 1 — Repairs & Setup */}
               <motion.div
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -490,66 +497,52 @@ export default function App() {
               >
                 <div className="text-3xl mb-4">🔧</div>
                 <h3 className="text-xl font-bold text-heading-text mb-3">
-                  Tech Installs
+                  Repairs & Setup
                 </h3>
                 <p className="text-body-text text-sm leading-relaxed mb-5">
-                  Professional installation and configuration of tech systems
-                  for homes and businesses. Flat rate pricing, quoted after a
-                  free consultation.
+                  Fast, reliable repairs and configuration for your devices —
+                  homes and businesses.
                 </p>
                 <ul className="space-y-2">
-                  {[
-                    "Security cameras",
-                    "WiFi & mesh networking",
-                    "LAN & ethernet",
-                    "NAS systems",
-                    "Smart home & IoT devices",
-                    "Laptop & desktop repair",
-                    "Laptop imaging & setup",
-                    "On-site server setup & configuration",
-                    "Cloud server setup & migration",
-                    "Video conferencing system installation",
-                    "Digital display screens",
-                    "Streaming setups",
-                  ].map((item) => (
-                    <li
-                      key={item}
-                      className="flex items-center gap-2.5 text-sm text-body-text"
-                    >
-                      <Check size={14} className="text-blue-accent shrink-0" />
-                      {item}
-                    </li>
-                  ))}
+                  {["Laptop & desktop repair", "Laptop imaging & setup"].map(
+                    (item) => (
+                      <li
+                        key={item}
+                        className="flex items-center gap-2.5 text-sm text-body-text"
+                      >
+                        <Check
+                          size={14}
+                          className="text-blue-accent shrink-0"
+                        />
+                        {item}
+                      </li>
+                    ),
+                  )}
                 </ul>
               </motion.div>
 
-              {/* Card 2 — Business IT Support */}
+              {/* Card 2 — Networking */}
               <motion.div
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.45, delay: 0.1 }}
+                transition={{ duration: 0.45, delay: 0.08 }}
                 data-ocid="services.item.2"
                 className="bg-card-bg border border-card-border rounded-2xl p-8 hover:border-blue-accent/40 transition-colors shadow-card"
               >
-                <div className="text-3xl mb-4">💼</div>
+                <div className="text-3xl mb-4">🌐</div>
                 <h3 className="text-xl font-bold text-heading-text mb-3">
-                  Business IT Support
+                  Networking
                 </h3>
                 <p className="text-body-text text-sm leading-relaxed mb-5">
-                  On-call IT support for small businesses that need reliable
-                  tech help without hiring full time.
+                  Full network design, installation, and troubleshooting for
+                  homes and offices.
                 </p>
                 <ul className="space-y-2">
                   {[
-                    "Remote & on-site support",
-                    "Employee onboarding & offboarding",
-                    "System & application setup",
-                    "Network setup & troubleshooting",
-                    "Server setup & management",
-                    "Cloud infrastructure setup",
-                    "Video conferencing room setup",
-                    "Priority response plans",
+                    "WiFi & mesh network setup",
+                    "LAN & ethernet installation",
+                    "Network troubleshooting & optimization",
                   ].map((item) => (
                     <li
                       key={item}
@@ -562,31 +555,130 @@ export default function App() {
                 </ul>
               </motion.div>
 
-              {/* Card 3 — Masjid Tech */}
+              {/* Card 3 — Security & Surveillance */}
               <motion.div
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.45, delay: 0.18 }}
+                transition={{ duration: 0.45, delay: 0.16 }}
                 data-ocid="services.item.3"
                 className="bg-card-bg border border-card-border rounded-2xl p-8 hover:border-blue-accent/40 transition-colors shadow-card"
               >
-                <div className="text-3xl mb-4">🕌</div>
+                <div className="text-3xl mb-4">📷</div>
                 <h3 className="text-xl font-bold text-heading-text mb-3">
-                  Masjid Tech
+                  Security & Surveillance
                 </h3>
                 <p className="text-body-text text-sm leading-relaxed mb-5">
-                  Purpose built tech solutions for Masjids across the GTA — from
-                  someone in the community who understands your space and your
-                  needs.
+                  Professional camera and surveillance system installation for
+                  homes and businesses.
                 </p>
                 <ul className="space-y-2">
                   {[
-                    "Security cameras",
-                    "WiFi & full building networking",
-                    "Digital display screens",
-                    "Streaming for khutbahs & events",
-                    "Ongoing maintenance & support",
+                    "Security camera installation",
+                    "NVR & DVR setup",
+                    "Remote viewing configuration",
+                  ].map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-center gap-2.5 text-sm text-body-text"
+                    >
+                      <Check size={14} className="text-blue-accent shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+
+              {/* Card 4 — Infrastructure */}
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.45, delay: 0.24 }}
+                data-ocid="services.item.4"
+                className="bg-card-bg border border-card-border rounded-2xl p-8 hover:border-blue-accent/40 transition-colors shadow-card"
+              >
+                <div className="text-3xl mb-4">🖥️</div>
+                <h3 className="text-xl font-bold text-heading-text mb-3">
+                  Infrastructure
+                </h3>
+                <p className="text-body-text text-sm leading-relaxed mb-5">
+                  Build the backbone of your business with properly configured
+                  systems that scale.
+                </p>
+                <ul className="space-y-2">
+                  {[
+                    "NAS system setup & configuration",
+                    "On-site server setup",
+                    "Video conferencing system installation",
+                  ].map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-center gap-2.5 text-sm text-body-text"
+                    >
+                      <Check size={14} className="text-blue-accent shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+
+              {/* Card 5 — Smart Tech */}
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.45, delay: 0.32 }}
+                data-ocid="services.item.5"
+                className="bg-card-bg border border-card-border rounded-2xl p-8 hover:border-blue-accent/40 transition-colors shadow-card"
+              >
+                <div className="text-3xl mb-4">🏠</div>
+                <h3 className="text-xl font-bold text-heading-text mb-3">
+                  Smart Tech
+                </h3>
+                <p className="text-body-text text-sm leading-relaxed mb-5">
+                  Get your smart home and IoT devices connected, configured, and
+                  actually working together.
+                </p>
+                <ul className="space-y-2">
+                  {[
+                    "Smart home device setup",
+                    "IoT device configuration",
+                    "Smart office setup",
+                  ].map((item) => (
+                    <li
+                      key={item}
+                      className="flex items-center gap-2.5 text-sm text-body-text"
+                    >
+                      <Check size={14} className="text-blue-accent shrink-0" />
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </motion.div>
+
+              {/* Card 6 — Business Software */}
+              <motion.div
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.45, delay: 0.4 }}
+                data-ocid="services.item.6"
+                className="bg-card-bg border border-card-border rounded-2xl p-8 hover:border-blue-accent/40 transition-colors shadow-card"
+              >
+                <div className="text-3xl mb-4">☁️</div>
+                <h3 className="text-xl font-bold text-heading-text mb-3">
+                  Business Software
+                </h3>
+                <p className="text-body-text text-sm leading-relaxed mb-5">
+                  Get your team set up and running on the tools they need from
+                  day one.
+                </p>
+                <ul className="space-y-2">
+                  {[
+                    "Microsoft 365 & Google Workspace setup",
+                    "Business app deployment",
+                    "Software onboarding & training",
                   ].map((item) => (
                     <li
                       key={item}
@@ -700,7 +792,8 @@ export default function App() {
                 transition={{ delay: 0.1 }}
                 className="text-body-text max-w-md mx-auto"
               >
-                Flexible monthly plans for small businesses in the GTA.
+                Flexible monthly plans for small businesses in the GTA —
+                structured, professional, and built around your schedule.
               </motion.p>
             </div>
 
@@ -717,17 +810,23 @@ export default function App() {
                 <h3 className="text-lg font-bold text-heading-text mb-1">
                   Starter
                 </h3>
-                <div className="flex items-end gap-1 mb-6">
+                <div className="flex items-end gap-1 mb-2">
                   <span className="text-4xl font-bold text-heading-text">
                     $150
                   </span>
                   <span className="text-body-text mb-1">/month</span>
                 </div>
+                <p className="text-sm text-body-text leading-relaxed mb-5">
+                  For small businesses that need reliable IT support on their
+                  schedule.
+                </p>
                 <ul className="space-y-3 flex-1 mb-8">
                   {[
-                    "Remote support via phone & email",
-                    "Up to 3 support requests per month",
-                    "Free onboarding assessment",
+                    "Unlimited email support",
+                    "2 scheduled remote sessions per month (1 hr each)",
+                    "Next business day email response",
+                    "Free Current Setup Assessment",
+                    "Discounted rate on one-off jobs",
                   ].map((f) => (
                     <li
                       key={f}
@@ -768,18 +867,23 @@ export default function App() {
                 <h3 className="text-lg font-bold text-heading-text mb-1">
                   Growth
                 </h3>
-                <div className="flex items-end gap-1 mb-6">
+                <div className="flex items-end gap-1 mb-2">
                   <span className="text-4xl font-bold text-heading-text">
-                    $300
+                    $250
                   </span>
                   <span className="text-body-text mb-1">/month</span>
                 </div>
+                <p className="text-sm text-body-text leading-relaxed mb-5">
+                  For businesses that need a more hands-on, regular IT presence.
+                </p>
                 <ul className="space-y-3 flex-1 mb-8">
                   {[
-                    "Everything in Starter",
-                    "1 on-site visit per month",
-                    "Priority response",
-                    "Free onboarding assessment",
+                    "Unlimited email support",
+                    "4 scheduled remote sessions per month (1 hr each)",
+                    "1 scheduled on-site visit per month",
+                    "Same day email response",
+                    "Free Current Setup Assessment",
+                    "Discounted rate on one-off jobs",
                   ].map((f) => (
                     <li
                       key={f}
@@ -820,11 +924,11 @@ export default function App() {
           </div>
         </section>
 
-        {/* ── MASJID TECH ── */}
+        {/* ── MASJID TECH (hidden) ── */}
         <section
           id="masjid-tech"
           className="py-20 md:py-28"
-          style={{ backgroundColor: "oklch(0.165 0.025 80)" }}
+          style={{ display: "none", backgroundColor: "oklch(0.165 0.025 80)" }}
         >
           <div className="mx-auto max-w-6xl px-6">
             <div className="text-center mb-16">
@@ -1027,8 +1131,8 @@ export default function App() {
                 transition={{ delay: 0.1 }}
                 className="text-body-text max-w-lg mx-auto"
               >
-                Whether it's a one-time install, monthly support, or a full
-                Masjid setup — we're easy to reach.
+                Whether it's a one-time install or monthly support — we're easy
+                to reach.
               </motion.p>
             </div>
 
@@ -1053,13 +1157,13 @@ export default function App() {
                       647-581-2241
                     </a>
                     <a
-                      href="mailto:contact@swiftotech.com"
+                      href="mailto:contact@syncto.ca"
                       className="flex items-center gap-3 text-sm text-body-text hover:text-blue-accent transition-colors"
                     >
                       <span className="w-10 h-10 rounded-xl bg-blue-accent/10 flex items-center justify-center shrink-0">
                         <Mail size={17} className="text-blue-accent" />
                       </span>
-                      contact@swiftotech.com
+                      contact@syncto.ca
                     </a>
                     <div className="flex items-center gap-3 text-sm text-body-text">
                       <span className="w-10 h-10 rounded-xl bg-blue-accent/10 flex items-center justify-center shrink-0">
@@ -1078,8 +1182,8 @@ export default function App() {
                     Response Time
                   </p>
                   <p className="text-sm text-body-text leading-relaxed">
-                    We respond to all inquiries within a few hours,
-                    Monday–Friday, 8am–6pm EST.
+                    We respond to all inquiries within a few hours, 7 days a
+                    week.
                   </p>
                 </div>
               </div>
@@ -1114,19 +1218,31 @@ export default function App() {
               ))}
             </nav>
           </div>
-          <div className="border-t border-card-border pt-8 text-center text-xs text-muted-text">
-            © {currentYear}{" "}
-            <a
-              href={`https://caffeine.ai?utm_source=caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(typeof window !== "undefined" ? window.location.hostname : "")}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-body-text transition-colors"
-            >
-              Built with ♥ using caffeine.ai
-            </a>
+          <div className="border-t border-card-border pt-8 text-center">
+            <p className="text-sm text-body-text mb-2">
+              Keeping the Greater Toronto Area connected.
+            </p>
+            <p className="text-xs text-muted-text">
+              © {currentYear}{" "}
+              <a
+                href={`https://caffeine.ai?utm_source=caffeine-footer&utm_medium=referral&utm_content=${encodeURIComponent(typeof window !== "undefined" ? window.location.hostname : "")}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-body-text transition-colors"
+              >
+                Built with ♥ using caffeine.ai
+              </a>
+            </p>
           </div>
         </div>
       </footer>
     </div>
   );
+}
+
+export default function App() {
+  if (window.location.pathname === "/admin") {
+    return <AdminPage />;
+  }
+  return <MainSite />;
 }

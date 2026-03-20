@@ -14,8 +14,10 @@ export interface Submission {
   'service' : string,
   'orgName' : string,
   'name' : string,
+  'ticketId' : bigint,
   'email' : string,
   'message' : string,
+  'notes' : string,
   'timestamp' : Time,
   'phone' : string,
 }
@@ -26,6 +28,7 @@ export interface _SERVICE {
     [string, string, string, string, string, string],
     undefined
   >,
+  'updateNotes' : ActorMethod<[bigint, string], boolean>,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

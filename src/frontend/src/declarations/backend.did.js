@@ -13,8 +13,10 @@ export const Submission = IDL.Record({
   'service' : IDL.Text,
   'orgName' : IDL.Text,
   'name' : IDL.Text,
+  'ticketId' : IDL.Nat,
   'email' : IDL.Text,
   'message' : IDL.Text,
+  'notes' : IDL.Text,
   'timestamp' : Time,
   'phone' : IDL.Text,
 });
@@ -26,6 +28,7 @@ export const idlService = IDL.Service({
       [],
       [],
     ),
+  'updateNotes' : IDL.Func([IDL.Nat, IDL.Text], [IDL.Bool], []),
 });
 
 export const idlInitArgs = [];
@@ -36,8 +39,10 @@ export const idlFactory = ({ IDL }) => {
     'service' : IDL.Text,
     'orgName' : IDL.Text,
     'name' : IDL.Text,
+    'ticketId' : IDL.Nat,
     'email' : IDL.Text,
     'message' : IDL.Text,
+    'notes' : IDL.Text,
     'timestamp' : Time,
     'phone' : IDL.Text,
   });
@@ -49,6 +54,7 @@ export const idlFactory = ({ IDL }) => {
         [],
         [],
       ),
+    'updateNotes' : IDL.Func([IDL.Nat, IDL.Text], [IDL.Bool], []),
   });
 };
 

@@ -4,6 +4,7 @@ import Iter "mo:core/Iter";
 import Order "mo:core/Order";
 import Time "mo:core/Time";
 import Int "mo:core/Int";
+import Nat "mo:core/Nat";
 
 
 
@@ -16,6 +17,8 @@ actor {
     service : Text;
     message : Text;
     timestamp : Time.Time;
+    ticketId : Nat;
+    notes : Text;
   };
 
   module Submission {
@@ -24,6 +27,7 @@ actor {
     };
   };
 
+  var nextTicketId = 1;
   let submissions = Map.empty<Time.Time, Submission>();
 
   public shared ({ caller }) func submit(
@@ -43,11 +47,29 @@ actor {
       service;
       message;
       timestamp;
+      ticketId = nextTicketId;
+      notes = "";
     };
     submissions.add(timestamp, submission);
+    nextTicketId += 1;
+  };
+
+  public shared ({ caller }) func updateNotes(ticketId : Nat, notes : Text) : async Bool {
+    var updated = false;
+    submissions.forEach(
+      func(timestamp, submission) {
+        if (submission.ticketId == ticketId) {
+          let updatedSubmission = { submission with notes };
+          submissions.add(timestamp, updatedSubmission);
+          updated := true;
+        };
+      }
+    );
+    updated;
   };
 
   public query ({ caller }) func getAllSubmissions() : async [Submission] {
     submissions.values().toArray().sort();
   };
 };
+

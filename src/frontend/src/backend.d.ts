@@ -11,8 +11,10 @@ export interface Submission {
     service: string;
     orgName: string;
     name: string;
+    ticketId: bigint;
     email: string;
     message: string;
+    notes: string;
     timestamp: Time;
     phone: string;
 }
@@ -20,4 +22,5 @@ export type Time = bigint;
 export interface backendInterface {
     getAllSubmissions(): Promise<Array<Submission>>;
     submit(name: string, orgName: string, email: string, phone: string, service: string, message: string): Promise<void>;
+    updateNotes(ticketId: bigint, notes: string): Promise<boolean>;
 }
