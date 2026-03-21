@@ -10,8 +10,20 @@ import type { Submission } from "../backend.d.ts";
 import { useActor } from "../hooks/useActor";
 
 const ADMIN_USERNAME = "daiyan018";
+// SHA-256 of "SyncTO2026NewChapter!"
 const ADMIN_HASH =
-  "a9c7bfb74df32f63efb0deba44cc2bb6b40a3b41f6e8c8fdbae81fc8d5a17f5e";
+  "36b1dcbb12c2219649a242a24057189324c8625093458238d44a4cac4e7c7f3c";
+
+const SECURITY_Q_KEY = "syncto_security_q";
+const SECURITY_A_KEY = "syncto_security_a";
+
+const PRESET_QUESTIONS = [
+  "What was the name of your first pet?",
+  "What street did you grow up on?",
+  "What was the make of your first car?",
+  "What is your mother's maiden name?",
+  "What city were you born in?",
+];
 
 async function sha256(text: string): Promise<string> {
   const encoder = new TextEncoder();
@@ -36,16 +48,32 @@ function formatDate(ts: bigint): string {
   });
 }
 
+type AdminView = "login" | "setup_security" | "forgot" | "dashboard";
+
 export default function AdminPage() {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [view, setView] = useState<AdminView>("login");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [loginError, setLoginError] = useState("");
   const [loggingIn, setLoggingIn] = useState(false);
+  const [showForgotLink, setShowForgotLink] = useState(false);
+
+  // Security question setup
+  const [setupQuestion, setSetupQuestion] = useState(PRESET_QUESTIONS[0]);
+  const [setupAnswer, setSetupAnswer] = useState("");
+  const [setupSaving, setSetupSaving] = useState(false);
+
+  // Forgot password
+  const [forgotAnswer, setForgotAnswer] = useState("");
+  const [forgotError, setForgotError] = useState("");
+  const [forgotChecking, setForgotChecking] = useState(false);
+
   const [selected, setSelected] = useState<Submission | null>(null);
   const [notes, setNotes] = useState("");
   const { actor, isFetching } = useActor();
   const queryClient = useQueryClient();
+
+  const storedQuestion = localStorage.getItem(SECURITY_Q_KEY);
 
   const { data: submissions = [], isLoading } = useQuery<Submission[]>({
     queryKey: ["submissions"],
@@ -53,7 +81,7 @@ export default function AdminPage() {
       if (!actor) return [];
       return actor.getAllSubmissions();
     },
-    enabled: !!actor && !isFetching && loggedIn,
+    enabled: !!actor && !isFetching && view === "dashboard",
   });
 
   const updateNotesMutation = useMutation({
@@ -73,15 +101,55 @@ export default function AdminPage() {
     e.preventDefault();
     setLoggingIn(true);
     setLoginError("");
+    setShowForgotLink(false);
     try {
       const hash = await sha256(password);
       if (username === ADMIN_USERNAME && hash === ADMIN_HASH) {
-        setLoggedIn(true);
+        // Check if security question is set up
+        if (!localStorage.getItem(SECURITY_Q_KEY)) {
+          setView("setup_security");
+        } else {
+          setView("dashboard");
+        }
       } else {
         setLoginError("Invalid username or password.");
+        if (localStorage.getItem(SECURITY_Q_KEY)) {
+          setShowForgotLink(true);
+        }
       }
     } finally {
       setLoggingIn(false);
+    }
+  };
+
+  const handleSaveSecurityQuestion = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!setupAnswer.trim()) return;
+    setSetupSaving(true);
+    try {
+      const answerHash = await sha256(setupAnswer.trim().toLowerCase());
+      localStorage.setItem(SECURITY_Q_KEY, setupQuestion);
+      localStorage.setItem(SECURITY_A_KEY, answerHash);
+      setView("dashboard");
+    } finally {
+      setSetupSaving(false);
+    }
+  };
+
+  const handleForgotSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setForgotChecking(true);
+    setForgotError("");
+    try {
+      const answerHash = await sha256(forgotAnswer.trim().toLowerCase());
+      const storedHash = localStorage.getItem(SECURITY_A_KEY);
+      if (answerHash === storedHash) {
+        setView("dashboard");
+      } else {
+        setForgotError("Incorrect answer. Please try again.");
+      }
+    } finally {
+      setForgotChecking(false);
     }
   };
 
@@ -98,7 +166,8 @@ export default function AdminPage() {
     });
   };
 
-  if (!loggedIn) {
+  // --- Login screen ---
+  if (view === "login") {
     return (
       <div className="min-h-screen bg-[#1a2236] flex items-center justify-center px-6">
         <div className="w-full max-w-sm">
@@ -154,9 +223,22 @@ export default function AdminPage() {
               />
             </div>
             {loginError && (
-              <p className="text-red-400 text-sm" data-ocid="admin.error_state">
-                {loginError}
-              </p>
+              <div data-ocid="admin.error_state">
+                <p className="text-red-400 text-sm">{loginError}</p>
+                {showForgotLink && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setForgotAnswer("");
+                      setForgotError("");
+                      setView("forgot");
+                    }}
+                    className="text-[#F2922B] text-sm underline underline-offset-2 mt-1"
+                  >
+                    Forgot password?
+                  </button>
+                )}
+              </div>
             )}
             <Button
               type="submit"
@@ -176,9 +258,134 @@ export default function AdminPage() {
     );
   }
 
+  // --- Security question setup (first login) ---
+  if (view === "setup_security") {
+    return (
+      <div className="min-h-screen bg-[#1a2236] flex items-center justify-center px-6">
+        <div className="w-full max-w-sm">
+          <div className="mb-8">
+            <h1 className="text-2xl font-bold text-white">
+              Set Up Account Recovery
+            </h1>
+            <p className="text-white/40 text-sm mt-2">
+              Choose a security question so you can recover access if you ever
+              forget your password.
+            </p>
+          </div>
+          <form onSubmit={handleSaveSecurityQuestion} className="space-y-4">
+            <div>
+              <Label className="text-white/60 text-sm mb-1.5 block">
+                Security Question
+              </Label>
+              <select
+                value={setupQuestion}
+                onChange={(e) => setSetupQuestion(e.target.value)}
+                className="w-full bg-white/5 border border-white/10 text-white rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#F2922B]/50"
+              >
+                {PRESET_QUESTIONS.map((q) => (
+                  <option key={q} value={q} className="bg-[#1a2236]">
+                    {q}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <Label className="text-white/60 text-sm mb-1.5 block">
+                Your Answer
+              </Label>
+              <Input
+                required
+                value={setupAnswer}
+                onChange={(e) => setSetupAnswer(e.target.value)}
+                className="bg-white/5 border-white/10 text-white placeholder:text-white/20"
+                placeholder="Enter your answer"
+                autoComplete="off"
+              />
+              <p className="text-white/30 text-xs mt-1">
+                Answer is case-insensitive.
+              </p>
+            </div>
+            <Button
+              type="submit"
+              disabled={setupSaving || !setupAnswer.trim()}
+              className="w-full bg-[#F2922B] hover:bg-[#F2922B]/90 text-[#1a2236] font-bold h-11"
+            >
+              {setupSaving ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                "Save & Continue"
+              )}
+            </Button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  // --- Forgot password (security question challenge) ---
+  if (view === "forgot") {
+    return (
+      <div className="min-h-screen bg-[#1a2236] flex items-center justify-center px-6">
+        <div className="w-full max-w-sm">
+          <button
+            type="button"
+            onClick={() => setView("login")}
+            className="flex items-center gap-2 text-white/40 hover:text-white text-sm mb-8 transition-colors"
+          >
+            <ArrowLeft size={16} />
+            Back to login
+          </button>
+          <div className="mb-8">
+            <h1 className="text-2xl font-bold text-white">Account Recovery</h1>
+            <p className="text-white/40 text-sm mt-2">
+              Answer your security question to regain access.
+            </p>
+          </div>
+          <form onSubmit={handleForgotSubmit} className="space-y-4">
+            <div>
+              <Label className="text-white/60 text-sm mb-1.5 block">
+                Security Question
+              </Label>
+              <p className="text-white text-sm bg-white/5 rounded-md px-3 py-3 border border-white/10">
+                {storedQuestion}
+              </p>
+            </div>
+            <div>
+              <Label className="text-white/60 text-sm mb-1.5 block">
+                Your Answer
+              </Label>
+              <Input
+                required
+                value={forgotAnswer}
+                onChange={(e) => setForgotAnswer(e.target.value)}
+                className="bg-white/5 border-white/10 text-white placeholder:text-white/20"
+                placeholder="Enter your answer"
+                autoComplete="off"
+              />
+            </div>
+            {forgotError && (
+              <p className="text-red-400 text-sm">{forgotError}</p>
+            )}
+            <Button
+              type="submit"
+              disabled={forgotChecking || !forgotAnswer.trim()}
+              className="w-full bg-[#F2922B] hover:bg-[#F2922B]/90 text-[#1a2236] font-bold h-11"
+            >
+              {forgotChecking ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                "Verify & Access"
+              )}
+            </Button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  // --- Dashboard ---
   return (
     <div className="min-h-screen bg-[#1a2236] text-white">
-      {/* Header */}
       <header className="border-b border-white/5 px-6 h-16 flex items-center justify-between">
         <div className="flex items-center gap-4">
           <a
@@ -192,7 +399,13 @@ export default function AdminPage() {
         </div>
         <button
           type="button"
-          onClick={() => setLoggedIn(false)}
+          onClick={() => {
+            setView("login");
+            setUsername("");
+            setPassword("");
+            setLoginError("");
+            setShowForgotLink(false);
+          }}
           className="flex items-center gap-2 text-white/40 hover:text-white text-sm transition-colors"
           data-ocid="admin.logout.button"
         >
@@ -203,7 +416,6 @@ export default function AdminPage() {
 
       <div className="max-w-6xl mx-auto px-6 py-10">
         {selected ? (
-          /* Detail view */
           <div>
             <button
               type="button"
@@ -294,7 +506,6 @@ export default function AdminPage() {
             </div>
           </div>
         ) : (
-          /* List view */
           <div>
             <div className="flex items-center justify-between mb-8">
               <h1 className="text-2xl font-bold">Contact Submissions</h1>

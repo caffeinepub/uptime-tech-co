@@ -134,23 +134,6 @@ const valueProps = [
   },
 ];
 
-const starterFeatures = [
-  "Unlimited email support",
-  "2 scheduled remote sessions/month (1 hr each)",
-  "Next business day email response",
-  "Free Current Setup Assessment",
-  "Discounted rate on one-off jobs",
-];
-
-const growthFeatures = [
-  "Unlimited email support",
-  "4 scheduled remote sessions/month (1 hr each)",
-  "1 scheduled on-site visit/month",
-  "Same day email response",
-  "Free Current Setup Assessment",
-  "Discounted rate on one-off jobs",
-];
-
 export default function HomePage() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [formData, setFormData] = useState({
@@ -217,7 +200,6 @@ export default function HomePage() {
           <a href="/" data-ocid="nav.link">
             <Wordmark />
           </a>
-          {/* Desktop nav */}
           <nav
             className="hidden md:flex items-center gap-8"
             aria-label="Main navigation"
@@ -232,14 +214,6 @@ export default function HomePage() {
             </button>
             <button
               type="button"
-              onClick={() => handleNavLink("plans")}
-              className="text-sm text-white/70 hover:text-white transition-colors"
-              data-ocid="nav.plans.link"
-            >
-              Business Plans
-            </button>
-            <button
-              type="button"
               onClick={scrollToContact}
               className="text-sm bg-[#F2922B] text-[#1a2236] font-semibold px-4 py-2 rounded-md hover:bg-[#F2922B]/90 transition-colors"
               data-ocid="nav.contact.button"
@@ -247,7 +221,6 @@ export default function HomePage() {
               Contact
             </button>
           </nav>
-          {/* Mobile hamburger */}
           <button
             type="button"
             className="md:hidden p-2 text-white"
@@ -268,7 +241,7 @@ export default function HomePage() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 bg-[#1a2236]/95 backdrop-blur-md flex flex-col items-center justify-center gap-8 md:hidden"
+            className="fixed inset-0 z-40 bg-[#1a2236] flex flex-col items-center justify-center gap-8 md:hidden"
           >
             <button
               type="button"
@@ -277,14 +250,6 @@ export default function HomePage() {
               data-ocid="mobile.services.link"
             >
               Services
-            </button>
-            <button
-              type="button"
-              onClick={() => handleNavLink("plans")}
-              className="text-2xl text-white/80 hover:text-white transition-colors"
-              data-ocid="mobile.plans.link"
-            >
-              Business Plans
             </button>
             <button
               type="button"
@@ -299,7 +264,7 @@ export default function HomePage() {
       </AnimatePresence>
 
       {/* Hero */}
-      <section className="pt-32 pb-24 px-6 bg-[#1a2236]">
+      <section className="pt-32 pb-24 px-6">
         <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -331,7 +296,7 @@ export default function HomePage() {
       </section>
 
       {/* What We Do */}
-      <section id="services" className="py-24 px-6 bg-white">
+      <section id="services" className="py-24 px-6">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -340,15 +305,15 @@ export default function HomePage() {
             transition={{ duration: 0.5 }}
             className="mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-[#1a2236] mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
               What We Do
             </h2>
-            <p className="text-lg text-[#1a2236]/60 max-w-2xl">
+            <p className="text-lg text-[#8899aa] max-w-2xl">
               From a single laptop repair to a full office setup — we handle it
               all across the Greater Toronto Area.
             </p>
           </motion.div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
             {services.map((svc, i) => (
               <motion.div
                 key={svc.title}
@@ -356,15 +321,15 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.08 }}
-                className="bg-[#f7f8fa] rounded-xl p-7 hover:shadow-lg transition-shadow"
+                className="bg-[#243050] rounded-xl p-7 hover:bg-[#2a3760] transition-colors"
               >
-                <div className="w-10 h-10 rounded-lg bg-[#1a2236] flex items-center justify-center mb-5">
+                <div className="w-10 h-10 rounded-lg bg-[#F2922B]/10 flex items-center justify-center mb-5">
                   <svc.icon size={20} className="text-[#F2922B]" />
                 </div>
-                <h3 className="text-lg font-bold text-[#1a2236] mb-2">
+                <h3 className="text-lg font-bold text-white mb-2">
                   {svc.title}
                 </h3>
-                <p className="text-sm text-[#1a2236]/60 leading-relaxed">
+                <p className="text-sm text-[#8899aa] leading-relaxed">
                   {svc.description}
                 </p>
               </motion.div>
@@ -374,7 +339,7 @@ export default function HomePage() {
       </section>
 
       {/* Our Process */}
-      <section className="py-24 px-6 bg-[#1a2236]">
+      <section className="py-24 px-6 bg-[#243050]">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -395,7 +360,6 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.1 }}
-                className="relative"
               >
                 <div className="text-5xl font-black text-white/5 mb-3 leading-none">
                   {step.number}
@@ -406,7 +370,7 @@ export default function HomePage() {
                 <h3 className="text-xl font-bold text-white mb-2">
                   {step.label}
                 </h3>
-                <p className="text-sm text-white/50 leading-relaxed">
+                <p className="text-sm text-[#8899aa] leading-relaxed">
                   {step.desc}
                 </p>
               </motion.div>
@@ -415,125 +379,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Business IT Plans */}
-      <section id="plans" className="py-24 px-6 bg-[#f7f8fa]">
-        <div className="max-w-5xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="mb-16 text-center"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold text-[#1a2236] mb-4">
-              Always Have Someone to Call
-            </h2>
-            <p className="text-lg text-[#1a2236]/60 max-w-2xl mx-auto">
-              Flexible monthly plans for small businesses in the GTA —
-              structured, professional, and built around your schedule.
-            </p>
-          </motion.div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Starter */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4 }}
-              className="bg-white rounded-2xl p-8 border border-[#1a2236]/10"
-            >
-              <h3 className="text-xl font-bold text-[#1a2236] mb-1">Starter</h3>
-              <p className="text-[#1a2236]/50 text-sm mb-6">
-                For small businesses that need reliable IT support on their
-                schedule.
-              </p>
-              <div className="flex items-baseline gap-1 mb-8">
-                <span className="text-4xl font-black text-[#1a2236]">$150</span>
-                <span className="text-[#1a2236]/50">/month</span>
-              </div>
-              <ul className="space-y-3 mb-8">
-                {starterFeatures.map((f) => (
-                  <li
-                    key={f}
-                    className="flex items-start gap-3 text-sm text-[#1a2236]/70"
-                  >
-                    <Check
-                      size={16}
-                      className="text-[#F2922B] mt-0.5 shrink-0"
-                    />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <button
-                type="button"
-                onClick={scrollToContact}
-                className="w-full py-3 rounded-md border-2 border-[#1a2236] text-[#1a2236] font-bold hover:bg-[#1a2236] hover:text-white transition-colors"
-                data-ocid="plans.starter.button"
-              >
-                Get Started
-              </button>
-            </motion.div>
-
-            {/* Growth */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: 0.1 }}
-              className="bg-[#1a2236] rounded-2xl p-8 relative overflow-hidden"
-            >
-              <div className="absolute top-6 right-6 bg-[#F2922B] text-[#1a2236] text-xs font-bold px-3 py-1 rounded-full">
-                Most Popular
-              </div>
-              <h3 className="text-xl font-bold text-white mb-1">Growth</h3>
-              <p className="text-white/50 text-sm mb-6">
-                For businesses that need a more hands-on, regular IT presence.
-              </p>
-              <div className="flex items-baseline gap-1 mb-8">
-                <span className="text-4xl font-black text-white">$250</span>
-                <span className="text-white/50">/month</span>
-              </div>
-              <ul className="space-y-3 mb-8">
-                {growthFeatures.map((f) => (
-                  <li
-                    key={f}
-                    className="flex items-start gap-3 text-sm text-white/70"
-                  >
-                    <Check
-                      size={16}
-                      className="text-[#F2922B] mt-0.5 shrink-0"
-                    />
-                    {f}
-                  </li>
-                ))}
-              </ul>
-              <button
-                type="button"
-                onClick={scrollToContact}
-                className="w-full py-3 rounded-md bg-[#F2922B] text-[#1a2236] font-bold hover:bg-[#F2922B]/90 transition-colors"
-                data-ocid="plans.growth.button"
-              >
-                Get Started
-              </button>
-            </motion.div>
-          </div>
-          <p className="text-center text-[#1a2236]/50 mt-8 text-sm">
-            Need something custom?{" "}
-            <button
-              type="button"
-              onClick={scrollToContact}
-              className="text-[#F2922B] underline underline-offset-2"
-            >
-              Get in touch
-            </button>{" "}
-            and we'll build a plan that fits.
-          </p>
-        </div>
-      </section>
-
       {/* Why SyncTO Tech */}
-      <section className="py-24 px-6 bg-[#1a2236]">
+      <section className="py-24 px-6">
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -554,12 +401,13 @@ export default function HomePage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.08 }}
+                className="bg-[#243050] rounded-xl p-6"
               >
                 <div className="w-10 h-10 rounded-lg bg-[#F2922B]/10 flex items-center justify-center mb-5">
                   <v.icon size={20} className="text-[#F2922B]" />
                 </div>
                 <h3 className="text-lg font-bold text-white mb-2">{v.title}</h3>
-                <p className="text-sm text-white/50 leading-relaxed">
+                <p className="text-sm text-[#8899aa] leading-relaxed">
                   {v.desc}
                 </p>
               </motion.div>
@@ -569,7 +417,11 @@ export default function HomePage() {
       </section>
 
       {/* Contact */}
-      <section id="contact" ref={contactRef} className="py-24 px-6 bg-white">
+      <section
+        id="contact"
+        ref={contactRef}
+        className="py-24 px-6 bg-[#243050]"
+      >
         <div className="max-w-6xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -578,10 +430,10 @@ export default function HomePage() {
             transition={{ duration: 0.5 }}
             className="mb-16"
           >
-            <h2 className="text-4xl md:text-5xl font-bold text-[#1a2236] mb-4">
+            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
               Let's Talk
             </h2>
-            <p className="text-lg text-[#1a2236]/60 max-w-xl">
+            <p className="text-lg text-[#8899aa] max-w-xl">
               Whether it's a one-time install, monthly support, or a full office
               setup — we're easy to reach.
             </p>
@@ -613,7 +465,7 @@ export default function HomePage() {
                     <div>
                       <Label
                         htmlFor="name"
-                        className="text-[#1a2236]/70 text-sm mb-1.5 block"
+                        className="text-white/60 text-sm mb-1.5 block"
                       >
                         Name *
                       </Label>
@@ -624,7 +476,7 @@ export default function HomePage() {
                         onChange={(e) =>
                           setFormData((p) => ({ ...p, name: e.target.value }))
                         }
-                        className="bg-[#f7f8fa] border-[#1a2236]/10 text-[#1a2236] placeholder:text-[#1a2236]/30"
+                        className="bg-[#1a2236] border-white/10 text-white placeholder:text-white/20"
                         placeholder="Your name"
                         data-ocid="contact.name.input"
                       />
@@ -632,7 +484,7 @@ export default function HomePage() {
                     <div>
                       <Label
                         htmlFor="orgName"
-                        className="text-[#1a2236]/70 text-sm mb-1.5 block"
+                        className="text-white/60 text-sm mb-1.5 block"
                       >
                         Business / Organization
                       </Label>
@@ -645,7 +497,7 @@ export default function HomePage() {
                             orgName: e.target.value,
                           }))
                         }
-                        className="bg-[#f7f8fa] border-[#1a2236]/10 text-[#1a2236] placeholder:text-[#1a2236]/30"
+                        className="bg-[#1a2236] border-white/10 text-white placeholder:text-white/20"
                         placeholder="Company name (optional)"
                         data-ocid="contact.org.input"
                       />
@@ -655,7 +507,7 @@ export default function HomePage() {
                     <div>
                       <Label
                         htmlFor="email"
-                        className="text-[#1a2236]/70 text-sm mb-1.5 block"
+                        className="text-white/60 text-sm mb-1.5 block"
                       >
                         Email *
                       </Label>
@@ -667,7 +519,7 @@ export default function HomePage() {
                         onChange={(e) =>
                           setFormData((p) => ({ ...p, email: e.target.value }))
                         }
-                        className="bg-[#f7f8fa] border-[#1a2236]/10 text-[#1a2236] placeholder:text-[#1a2236]/30"
+                        className="bg-[#1a2236] border-white/10 text-white placeholder:text-white/20"
                         placeholder="you@example.com"
                         data-ocid="contact.email.input"
                       />
@@ -675,7 +527,7 @@ export default function HomePage() {
                     <div>
                       <Label
                         htmlFor="phone"
-                        className="text-[#1a2236]/70 text-sm mb-1.5 block"
+                        className="text-white/60 text-sm mb-1.5 block"
                       >
                         Phone
                       </Label>
@@ -686,7 +538,7 @@ export default function HomePage() {
                         onChange={(e) =>
                           setFormData((p) => ({ ...p, phone: e.target.value }))
                         }
-                        className="bg-[#f7f8fa] border-[#1a2236]/10 text-[#1a2236] placeholder:text-[#1a2236]/30"
+                        className="bg-[#1a2236] border-white/10 text-white placeholder:text-white/20"
                         placeholder="647-000-0000"
                         data-ocid="contact.phone.input"
                       />
@@ -695,7 +547,7 @@ export default function HomePage() {
                   <div>
                     <Label
                       htmlFor="service"
-                      className="text-[#1a2236]/70 text-sm mb-1.5 block"
+                      className="text-white/60 text-sm mb-1.5 block"
                     >
                       Service Interested In
                     </Label>
@@ -706,7 +558,7 @@ export default function HomePage() {
                       }
                     >
                       <SelectTrigger
-                        className="bg-[#f7f8fa] border-[#1a2236]/10 text-[#1a2236]"
+                        className="bg-[#1a2236] border-white/10 text-white"
                         data-ocid="contact.service.select"
                       >
                         <SelectValue placeholder="Select a service" />
@@ -732,7 +584,7 @@ export default function HomePage() {
                   <div>
                     <Label
                       htmlFor="message"
-                      className="text-[#1a2236]/70 text-sm mb-1.5 block"
+                      className="text-white/60 text-sm mb-1.5 block"
                     >
                       Message *
                     </Label>
@@ -744,14 +596,14 @@ export default function HomePage() {
                       onChange={(e) =>
                         setFormData((p) => ({ ...p, message: e.target.value }))
                       }
-                      className="bg-[#f7f8fa] border-[#1a2236]/10 text-[#1a2236] placeholder:text-[#1a2236]/30 resize-none"
+                      className="bg-[#1a2236] border-white/10 text-white placeholder:text-white/20 resize-none"
                       placeholder="Tell us what you need…"
                       data-ocid="contact.message.textarea"
                     />
                   </div>
                   {submitError && (
                     <p
-                      className="text-red-500 text-sm"
+                      className="text-red-400 text-sm"
                       data-ocid="contact.error_state"
                     >
                       {submitError}
@@ -772,7 +624,7 @@ export default function HomePage() {
             {/* Contact info */}
             <div className="lg:col-span-2 space-y-8">
               <div>
-                <h3 className="text-[#1a2236]/40 text-xs font-semibold uppercase tracking-widest mb-6">
+                <h3 className="text-[#8899aa] text-xs font-semibold uppercase tracking-widest mb-6">
                   Get in Touch
                 </h3>
                 <div className="space-y-5">
@@ -784,8 +636,8 @@ export default function HomePage() {
                       <Phone size={18} className="text-[#F2922B]" />
                     </div>
                     <div>
-                      <p className="text-xs text-[#1a2236]/40 mb-0.5">Phone</p>
-                      <p className="text-[#1a2236] font-semibold group-hover:text-[#F2922B] transition-colors">
+                      <p className="text-xs text-[#8899aa] mb-0.5">Phone</p>
+                      <p className="text-white font-semibold group-hover:text-[#F2922B] transition-colors">
                         647-581-2241
                       </p>
                     </div>
@@ -798,8 +650,8 @@ export default function HomePage() {
                       <Mail size={18} className="text-[#F2922B]" />
                     </div>
                     <div>
-                      <p className="text-xs text-[#1a2236]/40 mb-0.5">Email</p>
-                      <p className="text-[#1a2236] font-semibold group-hover:text-[#F2922B] transition-colors">
+                      <p className="text-xs text-[#8899aa] mb-0.5">Email</p>
+                      <p className="text-white font-semibold group-hover:text-[#F2922B] transition-colors">
                         contact@syncto.ca
                       </p>
                     </div>
@@ -809,10 +661,10 @@ export default function HomePage() {
                       <MapPin size={18} className="text-[#F2922B]" />
                     </div>
                     <div>
-                      <p className="text-xs text-[#1a2236]/40 mb-0.5">
+                      <p className="text-xs text-[#8899aa] mb-0.5">
                         Service Area
                       </p>
-                      <p className="text-[#1a2236] font-semibold">
+                      <p className="text-white font-semibold">
                         Greater Toronto Area
                       </p>
                     </div>
@@ -830,7 +682,7 @@ export default function HomePage() {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-8 mb-8">
             <div>
               <Wordmark />
-              <p className="text-white/40 text-sm mt-2">
+              <p className="text-[#8899aa] text-sm mt-2">
                 Keeping the Greater Toronto Area connected.
               </p>
             </div>
@@ -842,14 +694,6 @@ export default function HomePage() {
                 data-ocid="footer.services.link"
               >
                 Services
-              </button>
-              <button
-                type="button"
-                onClick={() => handleNavLink("plans")}
-                className="text-sm text-white/50 hover:text-white transition-colors"
-                data-ocid="footer.plans.link"
-              >
-                Business Plans
               </button>
               <button
                 type="button"
