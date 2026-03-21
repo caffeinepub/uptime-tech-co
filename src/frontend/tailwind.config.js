@@ -1,45 +1,35 @@
-import typography from "@tailwindcss/typography";
-import containerQueries from "@tailwindcss/container-queries";
-import animate from "tailwindcss-animate";
-
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: ["class"],
-  content: ["index.html", "src/**/*.{js,ts,jsx,tsx,html,css}"],
+  content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
   theme: {
-    container: {
-      center: true,
-      padding: "2rem",
-      screens: { "2xl": "1400px" },
-    },
     extend: {
-      fontFamily: {
-        sans: ["Plus Jakarta Sans", "Figtree", "system-ui", "sans-serif"],
-      },
       colors: {
+        navy: "#1a2236",
+        orange: "#F2922B",
         border: "oklch(var(--border))",
         input: "oklch(var(--input))",
-        ring: "oklch(var(--ring) / <alpha-value>)",
+        ring: "oklch(var(--ring))",
         background: "oklch(var(--background))",
         foreground: "oklch(var(--foreground))",
         primary: {
-          DEFAULT: "oklch(var(--primary) / <alpha-value>)",
+          DEFAULT: "oklch(var(--primary))",
           foreground: "oklch(var(--primary-foreground))",
         },
         secondary: {
-          DEFAULT: "oklch(var(--secondary) / <alpha-value>)",
+          DEFAULT: "oklch(var(--secondary))",
           foreground: "oklch(var(--secondary-foreground))",
         },
         destructive: {
-          DEFAULT: "oklch(var(--destructive) / <alpha-value>)",
+          DEFAULT: "oklch(var(--destructive))",
           foreground: "oklch(var(--destructive-foreground))",
         },
         muted: {
-          DEFAULT: "oklch(var(--muted) / <alpha-value>)",
-          foreground: "oklch(var(--muted-foreground) / <alpha-value>)",
+          DEFAULT: "oklch(var(--muted))",
+          foreground: "oklch(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "oklch(var(--accent) / <alpha-value>)",
+          DEFAULT: "oklch(var(--accent))",
           foreground: "oklch(var(--accent-foreground))",
         },
         popover: {
@@ -50,45 +40,15 @@ export default {
           DEFAULT: "oklch(var(--card))",
           foreground: "oklch(var(--card-foreground))",
         },
-        navy: "oklch(var(--navy))",
-        "navy-alt": "oklch(var(--navy-alt))",
-        "card-bg": "oklch(var(--card-bg))",
-        "masjid-bg": "oklch(var(--masjid-bg))",
-        "masjid-card": "oklch(var(--masjid-card))",
-        "blue-accent": "oklch(var(--blue-accent))",
-        "blue-hover": "oklch(var(--blue-hover))",
-        "heading-text": "oklch(var(--heading-text))",
-        "body-text": "oklch(var(--body-text))",
-        "muted-text": "oklch(var(--muted-text))",
-        "card-border": "oklch(var(--card-border))",
-        "warm-border": "oklch(var(--warm-border))",
-        chart: {
-          1: "oklch(var(--chart-1))",
-          2: "oklch(var(--chart-2))",
-          3: "oklch(var(--chart-3))",
-          4: "oklch(var(--chart-4))",
-          5: "oklch(var(--chart-5))",
-        },
-        sidebar: {
-          DEFAULT: "oklch(var(--sidebar))",
-          foreground: "oklch(var(--sidebar-foreground))",
-          primary: "oklch(var(--sidebar-primary))",
-          "primary-foreground": "oklch(var(--sidebar-primary-foreground))",
-          accent: "oklch(var(--sidebar-accent))",
-          "accent-foreground": "oklch(var(--sidebar-accent-foreground))",
-          border: "oklch(var(--sidebar-border))",
-          ring: "oklch(var(--sidebar-ring))",
-        },
+      },
+      fontFamily: {
+        sans: ["'Plus Jakarta Sans'", "system-ui", "sans-serif"],
+        display: ["'Bricolage Grotesque'", "'Plus Jakarta Sans'", "sans-serif"],
       },
       borderRadius: {
         lg: "var(--radius)",
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
-      },
-      boxShadow: {
-        card: "0 2px 16px 0 rgba(0,0,0,0.25)",
-        "card-hover": "0 8px 32px 0 rgba(0,0,0,0.4)",
-        glow: "0 0 24px 0 rgba(59,158,255,0.18)",
       },
       keyframes: {
         "accordion-down": {
@@ -99,12 +59,17 @@ export default {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "fade-in": {
+          from: { opacity: "0", transform: "translateY(16px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "fade-in": "fade-in 0.5s ease-out forwards",
       },
     },
   },
-  plugins: [typography, containerQueries, animate],
+  plugins: [require("tailwindcss-animate")],
 };

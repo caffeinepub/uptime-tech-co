@@ -1,85 +1,75 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,200;1,300&display=swap");
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("/assets/fonts/BricolageGrotesque.woff2") format("woff2");
+  font-weight: 200 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@font-face {
-  font-family: "Plus Jakarta Sans";
-  src: url("/assets/fonts/PlusJakartaSans.woff2") format("woff2");
-  font-weight: 300 700;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Figtree";
-  src: url("/assets/fonts/Figtree.woff2") format("woff2");
-  font-weight: 300 900;
-  font-display: swap;
-}
-
 @layer base {
   :root {
-    --radius: 0.75rem;
-
-    /* Dark navy palette */
-    --navy: 0.175 0.062 253;
-    --navy-alt: 0.2 0.055 253;
-    --card-bg: 0.235 0.05 253;
-    --masjid-bg: 0.165 0.025 80;
-    --masjid-card: 0.2 0.03 80;
-    --blue-accent: 0.62 0.22 262;
-    --blue-hover: 0.56 0.22 262;
-    --heading-text: 0.98 0 0;
-    --body-text: 0.78 0.015 253;
-    --muted-text: 0.58 0.015 253;
-    --card-border: 0.3 0.045 253;
-    --warm-border: 0.3 0.03 80;
-
-    /* shadcn semantic tokens (dark-mode calibrated) */
-    --background: 0.175 0.062 253;
-    --foreground: 0.98 0 0;
-    --card: 0.235 0.05 253;
-    --card-foreground: 0.98 0 0;
-    --popover: 0.235 0.05 253;
-    --popover-foreground: 0.98 0 0;
-    --primary: 0.62 0.22 262;
-    --primary-foreground: 0.98 0 0;
-    --secondary: 0.2 0.055 253;
-    --secondary-foreground: 0.98 0 0;
-    --muted: 0.235 0.05 253;
-    --muted-foreground: 0.58 0.015 253;
-    --accent: 0.62 0.22 262;
-    --accent-foreground: 0.98 0 0;
-    --destructive: 0.577 0.245 27.325;
-    --destructive-foreground: 0.985 0 0;
-    --border: 0.3 0.045 253;
-    --input: 0.3 0.045 253;
-    --ring: 0.62 0.22 262;
-    --chart-1: 0.646 0.222 41.116;
-    --chart-2: 0.6 0.118 184.704;
-    --chart-3: 0.398 0.07 227.392;
-    --chart-4: 0.828 0.189 84.429;
-    --chart-5: 0.769 0.188 70.08;
-    --sidebar: 0.2 0.055 253;
-    --sidebar-foreground: 0.98 0 0;
-    --sidebar-primary: 0.62 0.22 262;
-    --sidebar-primary-foreground: 0.98 0 0;
-    --sidebar-accent: 0.235 0.05 253;
-    --sidebar-accent-foreground: 0.98 0 0;
-    --sidebar-border: 0.3 0.045 253;
-    --sidebar-ring: 0.62 0.22 262;
+    --background: 18 4 250;
+    --foreground: 98 0 0;
+    --card: 22 3 248;
+    --card-foreground: 98 0 0;
+    --popover: 22 3 248;
+    --popover-foreground: 98 0 0;
+    --primary: 70 0.18 55;
+    --primary-foreground: 15 0 0;
+    --secondary: 25 3 248;
+    --secondary-foreground: 90 0 0;
+    --muted: 28 3 248;
+    --muted-foreground: 62 0.03 240;
+    --accent: 70 0.18 55;
+    --accent-foreground: 15 0 0;
+    --destructive: 55 0.22 25;
+    --destructive-foreground: 98 0 0;
+    --border: 28 0.04 248;
+    --input: 28 0.04 248;
+    --ring: 70 0.18 55;
+    --radius: 0.5rem;
   }
 
   * {
     @apply border-border;
-  }
-
-  body {
-    @apply bg-background text-foreground;
-    font-family: "Plus Jakarta Sans", "Figtree", system-ui, sans-serif;
+    box-sizing: border-box;
   }
 
   html {
     scroll-behavior: smooth;
     color-scheme: dark;
+  }
+
+  body {
+    background-color: oklch(var(--background));
+    color: oklch(var(--foreground));
+    font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+}
+
+@layer utilities {
+  .wordmark-sync {
+    font-weight: 200;
+    font-style: italic;
+    letter-spacing: -0.03em;
+    color: white;
+  }
+  .wordmark-to {
+    font-weight: 800;
+    font-style: normal;
+    color: #f2922b;
+  }
+  .wordmark-tech {
+    font-weight: 400;
+    font-style: normal;
+    color: white;
   }
 }
