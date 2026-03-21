@@ -1,12 +1,7 @@
-import Map "mo:core/Map";
-import Array "mo:core/Array";
-import Iter "mo:core/Iter";
 import Order "mo:core/Order";
 import Time "mo:core/Time";
 import Int "mo:core/Int";
-import Nat "mo:core/Nat";
-
-
+import Map "mo:core/Map";
 
 actor {
   type Submission = {
@@ -21,16 +16,30 @@ actor {
     notes : Text;
   };
 
-  module Submission {
-    public func compare(s1 : Submission, s2 : Submission) : Order.Order {
-      Int.compare(s1.timestamp, s2.timestamp);
-    };
+  let MAX_SUBMISSIONS : Nat = 500;
+
+  // Stable storage — survives canister upgrades
+  var submissionsStable : [Submission] = [];
+  var nextTicketIdStable : Nat = 1;
+
+  // Working state rebuilt from stable storage on upgrade
+  var submissions = Map.empty<Time.Time, Submission>();
+  var nextTicketId = nextTicketIdStable;
+
+  system func preupgrade() {
+    submissionsStable := submissions.values().toArray();
+    nextTicketIdStable := nextTicketId;
   };
 
-  var nextTicketId = 1;
-  let submissions = Map.empty<Time.Time, Submission>();
+  system func postupgrade() {
+    for (sub in submissionsStable.vals()) {
+      submissions.add(sub.timestamp, sub);
+    };
+    nextTicketId := nextTicketIdStable;
+    submissionsStable := [];
+  };
 
-  public shared ({ caller }) func submit(
+  public shared func submit(
     name : Text,
     orgName : Text,
     email : Text,
@@ -38,6 +47,9 @@ actor {
     service : Text,
     message : Text,
   ) : async () {
+    if (submissions.values().toArray().size() >= MAX_SUBMISSIONS) {
+      return;
+    };
     let timestamp = Time.now();
     let submission : Submission = {
       name;
@@ -54,7 +66,7 @@ actor {
     nextTicketId += 1;
   };
 
-  public shared ({ caller }) func updateNotes(ticketId : Nat, notes : Text) : async Bool {
+  public shared func updateNotes(ticketId : Nat, notes : Text) : async Bool {
     var updated = false;
     submissions.forEach(
       func(timestamp, submission) {
@@ -68,8 +80,19 @@ actor {
     updated;
   };
 
-  public query ({ caller }) func getAllSubmissions() : async [Submission] {
-    submissions.values().toArray().sort();
+  public query func getAllSubmissions() : async [Submission] {
+    submissions.values().toArray().sort(
+      func(a : Submission, b : Submission) : Order.Order {
+        Int.compare(a.timestamp, b.timestamp);
+      }
+    );
+  };
+
+  public query func getSubmissionCount() : async Nat {
+    submissions.values().toArray().size();
+  };
+
+  public shared func deleteAllSubmissions() : async () {
+    submissions := Map.empty<Time.Time, Submission>();
   };
 };
-

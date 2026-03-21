@@ -103,8 +103,10 @@ export interface Submission {
 export type Time = bigint;
 export interface backendInterface {
     getAllSubmissions(): Promise<Array<Submission>>;
+    getSubmissionCount(): Promise<bigint>;
     submit(name: string, orgName: string, email: string, phone: string, service: string, message: string): Promise<void>;
     updateNotes(ticketId: bigint, notes: string): Promise<boolean>;
+    deleteAllSubmissions(): Promise<void>;
 }
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
@@ -119,6 +121,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.getAllSubmissions();
+            return result;
+        }
+    }
+    async getSubmissionCount(): Promise<bigint> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getSubmissionCount();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getSubmissionCount();
             return result;
         }
     }
@@ -147,6 +163,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.updateNotes(arg0, arg1);
+            return result;
+        }
+    }
+    async deleteAllSubmissions(): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.deleteAllSubmissions();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.deleteAllSubmissions();
             return result;
         }
     }

@@ -21,6 +21,8 @@ export interface Submission {
 export type Time = bigint;
 export interface backendInterface {
     getAllSubmissions(): Promise<Array<Submission>>;
+    getSubmissionCount(): Promise<bigint>;
     submit(name: string, orgName: string, email: string, phone: string, service: string, message: string): Promise<void>;
     updateNotes(ticketId: bigint, notes: string): Promise<boolean>;
+    deleteAllSubmissions(): Promise<void>;
 }

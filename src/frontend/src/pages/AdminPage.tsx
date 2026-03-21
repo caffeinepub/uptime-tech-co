@@ -4,7 +4,15 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, ChevronRight, Loader2, LogOut } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowLeft,
+  ChevronRight,
+  Download,
+  Loader2,
+  LogOut,
+  Trash2,
+} from "lucide-react";
 import { useState } from "react";
 import type { Submission } from "../backend.d.ts";
 import { useActor } from "../hooks/useActor";
@@ -16,6 +24,8 @@ const ADMIN_HASH =
 
 const SECURITY_Q_KEY = "syncto_security_q";
 const SECURITY_A_KEY = "syncto_security_a";
+const MAX_SUBMISSIONS = 500;
+const WARN_THRESHOLD = 450;
 
 const PRESET_QUESTIONS = [
   "What was the name of your first pet?",
@@ -48,6 +58,41 @@ function formatDate(ts: bigint): string {
   });
 }
 
+function exportToCSV(submissions: Submission[]) {
+  const headers = [
+    "Ticket #",
+    "Name",
+    "Organization",
+    "Email",
+    "Phone",
+    "Service",
+    "Date",
+    "Message",
+    "Notes",
+  ];
+  const rows = submissions.map((sub) => [
+    formatTicket(sub.ticketId),
+    sub.name,
+    sub.orgName || "",
+    sub.email,
+    sub.phone || "",
+    sub.service,
+    formatDate(sub.timestamp),
+    sub.message.replace(/"/g, '""'),
+    (sub.notes || "").replace(/"/g, '""'),
+  ]);
+  const csv = [headers, ...rows]
+    .map((row) => row.map((cell) => `"${cell}"`).join(","))
+    .join("\n");
+  const blob = new Blob([csv], { type: "text/csv" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = `syncto-submissions-${new Date().toISOString().split("T")[0]}.csv`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 type AdminView = "login" | "setup_security" | "forgot" | "dashboard";
 
 export default function AdminPage() {
@@ -67,6 +112,10 @@ export default function AdminPage() {
   const [forgotAnswer, setForgotAnswer] = useState("");
   const [forgotError, setForgotError] = useState("");
   const [forgotChecking, setForgotChecking] = useState(false);
+
+  // Delete confirmation
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [exported, setExported] = useState(false);
 
   const [selected, setSelected] = useState<Submission | null>(null);
   const [notes, setNotes] = useState("");
@@ -97,6 +146,18 @@ export default function AdminPage() {
     },
   });
 
+  const deleteAllMutation = useMutation({
+    mutationFn: async () => {
+      if (!actor) throw new Error("No actor");
+      await actor.deleteAllSubmissions();
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["submissions"] });
+      setConfirmDelete(false);
+      setExported(false);
+    },
+  });
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoggingIn(true);
@@ -105,7 +166,6 @@ export default function AdminPage() {
     try {
       const hash = await sha256(password);
       if (username === ADMIN_USERNAME && hash === ADMIN_HASH) {
-        // Check if security question is set up
         if (!localStorage.getItem(SECURITY_Q_KEY)) {
           setView("setup_security");
         } else {
@@ -165,6 +225,15 @@ export default function AdminPage() {
       notesText: notes,
     });
   };
+
+  const handleExportCSV = () => {
+    exportToCSV(submissions);
+    setExported(true);
+  };
+
+  const count = submissions.length;
+  const nearLimit = count >= WARN_THRESHOLD;
+  const atLimit = count >= MAX_SUBMISSIONS;
 
   // --- Login screen ---
   if (view === "login") {
@@ -322,7 +391,7 @@ export default function AdminPage() {
     );
   }
 
-  // --- Forgot password (security question challenge) ---
+  // --- Forgot password ---
   if (view === "forgot") {
     return (
       <div className="min-h-screen bg-[#1a2236] flex items-center justify-center px-6">
@@ -449,7 +518,7 @@ export default function AdminPage() {
                   <p className="text-white/30 text-xs uppercase tracking-widest mb-1">
                     Organization
                   </p>
-                  <p className="text-white">{selected.orgName || "—"}</p>
+                  <p className="text-white">{selected.orgName || "\u2014"}</p>
                 </div>
                 <div>
                   <p className="text-white/30 text-xs uppercase tracking-widest mb-1">
@@ -461,7 +530,7 @@ export default function AdminPage() {
                   <p className="text-white/30 text-xs uppercase tracking-widest mb-1">
                     Phone
                   </p>
-                  <p className="text-white">{selected.phone || "—"}</p>
+                  <p className="text-white">{selected.phone || "\u2014"}</p>
                 </div>
                 <div>
                   <p className="text-white/30 text-xs uppercase tracking-widest mb-1">
@@ -487,7 +556,7 @@ export default function AdminPage() {
                   onChange={(e) => setNotes(e.target.value)}
                   className="bg-white/5 border-white/10 text-white placeholder:text-white/20 resize-none"
                   rows={4}
-                  placeholder="Add internal notes…"
+                  placeholder="Add internal notes\u2026"
                   data-ocid="admin.notes.textarea"
                 />
                 <Button
@@ -507,12 +576,114 @@ export default function AdminPage() {
           </div>
         ) : (
           <div>
+            {/* Limit warning banner */}
+            {nearLimit && (
+              <div
+                className="mb-6 rounded-xl px-5 py-4 flex items-start gap-3"
+                style={{
+                  backgroundColor: atLimit ? "#3b1a1a" : "#2e2510",
+                  border: `1px solid ${atLimit ? "#f87171" : "#F2922B"}`,
+                }}
+              >
+                <AlertTriangle
+                  size={18}
+                  className="shrink-0 mt-0.5"
+                  style={{ color: atLimit ? "#f87171" : "#F2922B" }}
+                />
+                <div className="flex-1">
+                  <p
+                    className="text-sm font-semibold"
+                    style={{ color: atLimit ? "#f87171" : "#F2922B" }}
+                  >
+                    {atLimit
+                      ? "Submission limit reached (500/500)"
+                      : `Approaching submission limit (${count}/${MAX_SUBMISSIONS})`}
+                  </p>
+                  <p className="text-white/50 text-sm mt-0.5">
+                    {atLimit
+                      ? "New submissions are being dropped. Export your data and clear the queue below."
+                      : "Export a CSV backup and clear old submissions to free up space."}
+                  </p>
+                </div>
+              </div>
+            )}
+
             <div className="flex items-center justify-between mb-8">
-              <h1 className="text-2xl font-bold">Contact Submissions</h1>
-              <span className="text-white/40 text-sm">
-                {submissions.length} total
-              </span>
+              <h1 className="text-2xl font-bold">
+                Contact Submissions
+                <span className="text-white/30 text-base font-normal ml-3">
+                  {count}/{MAX_SUBMISSIONS}
+                </span>
+              </h1>
+              {count > 0 && (
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleExportCSV}
+                    className="border-white/20 text-white/70 hover:text-white hover:bg-white/10 flex items-center gap-2"
+                    data-ocid="admin.export.button"
+                  >
+                    <Download size={14} />
+                    Export CSV
+                  </Button>
+                  {(nearLimit || exported) && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setConfirmDelete(true)}
+                      className="border-red-500/40 text-red-400 hover:bg-red-500/10 flex items-center gap-2"
+                      data-ocid="admin.clear.button"
+                    >
+                      <Trash2 size={14} />
+                      Clear All
+                    </Button>
+                  )}
+                </div>
+              )}
             </div>
+
+            {/* Delete confirmation */}
+            {confirmDelete && (
+              <div
+                className="mb-6 rounded-xl px-5 py-5"
+                style={{
+                  backgroundColor: "#1e1010",
+                  border: "1px solid #f87171",
+                }}
+              >
+                <p className="text-white font-semibold mb-1">
+                  Delete all {count} submissions?
+                </p>
+                <p className="text-white/50 text-sm mb-4">
+                  This cannot be undone. Make sure you've exported a CSV backup
+                  first.
+                </p>
+                <div className="flex items-center gap-3">
+                  <Button
+                    size="sm"
+                    onClick={() => deleteAllMutation.mutate()}
+                    disabled={deleteAllMutation.isPending}
+                    className="bg-red-500 hover:bg-red-600 text-white font-bold"
+                  >
+                    {deleteAllMutation.isPending ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : (
+                      "Yes, delete all"
+                    )}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => setConfirmDelete(false)}
+                    className="text-white/50 hover:text-white"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            )}
+
             {isLoading ? (
               <div
                 className="flex items-center justify-center py-20"
